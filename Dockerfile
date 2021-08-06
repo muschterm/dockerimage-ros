@@ -4,6 +4,7 @@ LABEL maintainer "Matthew Muschter <muschterm@linux.com>"
 
 RUN apt-get update; \
     apt-get install --no-install-recommends -y \
+        git \
         zsh \
         gosu \
         curl \

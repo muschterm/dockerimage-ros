@@ -2,6 +2,8 @@ ARG build_version=foxy
 FROM ros:${build_version}
 LABEL maintainer "Matthew Muschter <muschterm@linux.com>"
 
+COPY [ "custom_ros_entrypoint.sh", "/" ]
+
 RUN apt-get update; \
     apt-get install --no-install-recommends -y \
         git \
@@ -10,6 +12,9 @@ RUN apt-get update; \
         curl \
         jq; \
     rm -rf /var/lib/apt/lists/*; \
+    chmod 755 /custom_ros_entrypoint.sh; \
+    chmod +x /opt/ros/${ROS_DISTRO}/*.*sh; \
+    printf -- "\n. /custom_ros_entrypoint.sh\n" >> "/etc/zsh/zshrc"; \
 # --add-dotfiles------------------------------------
     git clone https://github.com/muschterm/dotfiles.git -b main; \
     mkdir "/opt/dotfiles"; \
@@ -30,4 +35,4 @@ RUN apt-get update; \
 # --add-dotfiles------------------------------------
 
 ENTRYPOINT [ "/opt/dotfiles/docker-scripts/docker-entrypoint.sh" ]
-CMD [ "/ros_entrypoint.sh", "zsh", "--login" ]
+CMD [ "/bin/zsh" ]
